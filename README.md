@@ -6,7 +6,7 @@ Key Features:
 - 🔐 Next-auth v5 (Auth.js)
 - 🚀 Next.js 14 with server actions
 - 🔑 Credentials Provider
-- 🌐 OAuth Provider (Social login with Google & GitHub)
+- 🌐 OAuth Provider (Social login with Google, Discord & GitHub)
 - 🔒 Forgot password functionality
 - ✉️ Email verification
 - 📱 Two factor verification
@@ -43,7 +43,7 @@ Key Features:
 ### Cloning the repository
 
 ```shell
-git clone https://github.com/AntonioErdeljac/next-auth-v5-advanced-guide.git
+git clone https://github.com/DarKS4ys/auth-toolbox
 ```
 
 ### Install packages
