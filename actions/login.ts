@@ -2,8 +2,8 @@
 
 import { getUserByEmail } from '@/data/user';
 import { signIn } from '@/lib/auth';
-import { sendVerificationEmail } from '@/lib/mail';
-import { generateVerificationToken } from '@/lib/tokens';
+import { sendTwoFactorTokenEmail, sendVerificationEmail } from '@/lib/mail';
+import { generateTwoFactorToken, generateVerificationToken } from '@/lib/tokens';
 import { DEFAULT_LOGIN_REDIRECT } from '@/routes';
 import { LoginSchema } from '@/schemas';
 import { AuthError } from 'next-auth';
@@ -24,6 +24,7 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
     return { error: "Email does not exist"}
   }
 
+  // & Checks if the user's email is verified, and not allows them to log in before verifying.
   if (!existingUser.emailVerified) {
     const verificationToken = await generateVerificationToken(existingUser.email)
 
@@ -33,6 +34,18 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
     )
 
     return { success: "Confirmation email sent!"}
+  }
+
+  if (existingUser.isTwoFactorEnabled && existingUser.email) {
+    const twoFactorToken = await generateTwoFactorToken(existingUser.email)
+
+    await sendTwoFactorTokenEmail(
+      twoFactorToken.email,
+      twoFactorToken.token
+    )
+
+    // ? lets the app know that the user has 2FA to change the UI accordingly on login
+    return { twoFactor: true }
   }
 
   try {

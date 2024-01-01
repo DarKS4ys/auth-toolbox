@@ -28,6 +28,7 @@ Key Features:
 - 👮 currentRole utility
 - 🖥️ Example with server component
 - 💻 Example with client component
+- 📖 Explanatory comments in the code
 - 👑 Render content for admins using RoleGate component
 - 🛡️ Protect API Routes for admins only
 - 🔐 Protect Server Actions for admins only

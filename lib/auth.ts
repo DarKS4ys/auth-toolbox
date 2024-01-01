@@ -4,6 +4,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter"
 import { db } from "./db"
 import { getUserById } from "@/data/user"
 import type { UserRole } from "@prisma/client"
+import { getTwoFactorConfirmationByUserId } from "@/data/two-factor-confirmation"
 
 export const {
   handlers: { GET, POST },
@@ -12,20 +13,33 @@ export const {
   signOut,
 } = NextAuth({
   callbacks: {
+
+    // ? For customizing the signIn function of auth.js
     async signIn({ user, account }) {
       if(account?.provider !== "credentials") return true
 
       const existingUser = await getUserById(user.id)
 
-      // Prevent sign-in without email verification
+      // & Prevent sign-in without email verification (we also have another check in the server-actions)
       if (!existingUser?.emailVerified) return false
 
-      //TODO ADD 2FA CHECK
+      if (existingUser.isTwoFactorEnabled) {
+        const twoFactorConfirmation = await getTwoFactorConfirmationByUserId(existingUser.id)
+
+        if(!twoFactorConfirmation) return false
+
+        
+        // & MAYBE HAVE IP BASED STUFF OR LIKE AN EXPIRATION TIME ON THE TWOFACTORCONFIRMATION?        
+        // & Delete 2FA confirmation for next sign in ⤵️
+        await db.twoFactorConfirmation.delete({
+          where: {id: twoFactorConfirmation.id}
+        })
+      }
 
       return true
     },
 
-    /* NOTE: For adding custom stuff with the info coming from the jwt token */
+    // ? For adding custom stuff with the info coming from the jwt token
     async session({session,token}) {
       if(token.sub && session.user) {
         session.user.id = token.sub;
@@ -38,7 +52,7 @@ export const {
       return session
     },
 
-    /* NOTE: For adding custom stuff to jwt later to be used for session */
+    // ? For adding custom stuff to jwt later to be used for session and other custom stuff
     async jwt({token}) {
       if (!token.sub) return token
 
@@ -52,7 +66,7 @@ export const {
     }
   },
 
-  /* NOTE: For automatically verifying the email when auth provider used */
+  // ? For automatically verifying the email when an auth provider is used (linkAccount event is only triggered if auth provider is used)
   events: {
     async linkAccount({user}) {
       await db.user.update({
@@ -62,13 +76,13 @@ export const {
     }
   },
 
-  /* NOTE: For when something unexpected happens, auth.js should now where to go */
+  // ? For when something unexpected happens, auth.js should now where to go and that we have a custom page setup
   pages: {
     signIn: '/auth/login',
     error: '/auth/error'
   },
 
-  adapter: PrismaAdapter(db), // Prisma adapter (very important)
-  session: {strategy: "jwt"}, // Enables the use of jwt so we dont store sessions in db
+  adapter: PrismaAdapter(db), // ? Prisma adapter (very important)
+  session: {strategy: "jwt"}, // ? Enables the use of jwt so we dont store and fetch sessions in db, making the app faster
   ...authConfig,
 })

@@ -36,5 +36,6 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
     const verificationToken = await generateVerificationToken(email)
     await sendVerificationEmail(verificationToken.email, verificationToken.token)
     
+    // & Change to account is created if you dont wanna have email verification right away.
     return {success: "Confirmation email sent!"}
 }

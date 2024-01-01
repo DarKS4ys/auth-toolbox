@@ -5,8 +5,13 @@
  */
 export const publicRoutes = [
     "/",
-    "/auth/new-verification"
+    "/auth/new-verification" // ? for logged in and out users so its public
 ]
+
+/* export const privateRoutes = [
+    "/settings",
+]
+ */
 
 /**
  * An array of routes that are used for authentication
@@ -17,6 +22,8 @@ export const authRoutes = [
     "/auth/login",
     "/auth/register",
     "/auth/error",
+    "/auth/reset",
+    "/auth/new-password"
 ]
 
 /**
