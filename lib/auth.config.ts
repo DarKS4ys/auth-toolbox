@@ -1,8 +1,7 @@
 import Credentials from "next-auth/providers/credentials"
 import type { NextAuthConfig } from "next-auth"
 import { LoginSchema } from "@/schemas"
-import { getUserByEmail } from "@/data/user"
-import bcrypt from 'bcryptjs';
+import { getUserByEmail, validatePassword } from "@/data/user"
 import Github from "next-auth/providers/github"
 import Google from "next-auth/providers/google"
 import Discord from "next-auth/providers/discord"
@@ -31,7 +30,7 @@ export default {
                 const user = await getUserByEmail(email)
                 if(!user || !user.password) return null
 
-                const passwordsMatch = await bcrypt.compare(password, user.password)
+                const passwordsMatch = await validatePassword(user.password, password)
 
                 if (passwordsMatch) return user
             }

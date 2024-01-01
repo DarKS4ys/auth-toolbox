@@ -10,7 +10,7 @@ const Social = () => {
 
     const onClick = (provider: "google" | "github" | "discord") => {
         signIn(provider, {
-            callbackUrl: DEFAULT_LOGIN_REDIRECT
+            callbackUrl: DEFAULT_LOGIN_REDIRECT // ! UPDATE
         })
     }
 

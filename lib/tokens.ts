@@ -77,3 +77,14 @@ export const generateVerificationToken = async (email: string) => {
 
     return verificationToken
 }
+
+// & have to run this somewhere idk where tho
+export const deleteExpiredTwoFactorTokens = async () => {
+    const currentDate = new Date();
+
+    db.twoFactorToken.deleteMany({
+        where: {
+            expires: {lt: currentDate}
+        }
+    })
+}
