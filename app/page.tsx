@@ -16,7 +16,10 @@ export default function Home() {
         <h1 className={cn('text-6xl font-semibold drop-shadow-md', font.className)}>🔐 Auth</h1>
         <p className='text-lg '>A simple authentication toolbox</p>
         <div>
-          <LoginButton>
+
+          {/* If you dont want it to be a modal, just remove the mode prop. */}
+
+          <LoginButton mode="modal" asChild>
             <Button variant="secondary" size="lg">
               Sign in
             </Button>

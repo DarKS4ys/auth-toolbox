@@ -5,12 +5,17 @@ import {FaDiscord, FaGithub} from "react-icons/fa"
 import { Button } from "../ui/button";
 import { signIn } from "next-auth/react";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
+import { useSearchParams } from "next/navigation";
 
 const Social = () => {
 
+    const searchParams = useSearchParams()
+
+    const callbackUrl = searchParams.get('callbackUrl')
+
     const onClick = (provider: "google" | "github" | "discord") => {
         signIn(provider, {
-            callbackUrl: DEFAULT_LOGIN_REDIRECT // ! UPDATE
+            callbackUrl: callbackUrl || DEFAULT_LOGIN_REDIRECT
         })
     }
 

@@ -26,11 +26,14 @@ import Link from 'next/link';
 const LoginForm = () => {
   const [error, setError] = useState<string | undefined>('');
   const [success, setSuccess] = useState<string | undefined>('');
-  const [isPending, startTransition] = useTransition();
 
   const [showTwoFactor, setShowTwoFactor] = useState(false);
+  const [isPending, startTransition] = useTransition();
+
 
   const searchParams = useSearchParams();
+
+  const callbackUrl = searchParams.get('callbackUrl');
 
   const urlError =
     searchParams.get('error') === 'OAuthAccountNotLinked'
@@ -45,30 +48,29 @@ const LoginForm = () => {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof LoginSchema>) => {
+  const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
     setError('');
     setSuccess('');
 
-    startTransition(() => {
-      login(values)
-        .then((data) => {
-          if (data?.error) {
-            /* form.reset() */
-            setError(data.error);
-          }
+    startTransition(async () => {
+      try {
+        const data = await login(values, callbackUrl)
 
-          if (data?.success) {
-            form.reset();
-            setSuccess(data.success);
-          }
+        if (data?.error) {
+          setError(data.error)
+        }
 
-          if (data?.isTwoFactorEnabled) {
-            setShowTwoFactor(true);
-          }
-        })
-        .catch(() => {
-          setError('Something went wrong');
-        });
+        if (data?.success) {
+          form.reset()
+          setSuccess(data.success)
+        }
+
+        if (data?.isTwoFactorEnabled) {
+          setShowTwoFactor(true)
+        }
+      } catch {
+        setError("Something went wrong!")
+      }
     });
   };
 
@@ -155,7 +157,7 @@ const LoginForm = () => {
           <FormError message={error || urlError} />
           <FormSuccess message={success} />
           <Button type="submit" className="w-full" disabled={isPending}>
-            {showTwoFactor ? "Confirm" : "Login"}
+            {showTwoFactor ? 'Confirm' : 'Login'}
           </Button>
         </form>
       </Form>

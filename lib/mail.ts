@@ -2,7 +2,9 @@ import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
-// & IN THE FUTURE ADD REACT EMAIL WITH TAILWIND, SO EMAILS DONT LOOK ASS
+const domain = process.env.NEXT_PUBLIC_APP_URL
+
+// & IN THE FUTURE ADD REACT EMAIL WITH TAILWIND, SO EMAILS DONT LOOK BAD
 
 export const sendTwoFactorTokenEmail = async (email: string, token: string) => {
     await resend.emails.send({
@@ -14,7 +16,7 @@ export const sendTwoFactorTokenEmail = async (email: string, token: string) => {
 }
 
 export const sendPasswordResetEmail = async (email: string, token: string) => {
-    const resetLink = `http://localhost:3000/auth/new-password?token=${token}`
+    const resetLink = `${domain}/auth/new-password?token=${token}`
 
     await resend.emails.send({
         from: "onboarding@resend.dev",  // ? change to new one with domain
