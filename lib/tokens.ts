@@ -10,8 +10,7 @@ export const generateTwoFactorToken = async (email: string) => {
 // ->The underscores are just to see the 0's clearly, 100_000 is the same as 100000, just more readable <-
     const token = crypto.randomInt(100_000, 1_000_000).toString();
 
-    // & TODO: change to a shorter timeframe
-    const expires = new Date(new Date().getTime() + 3600 * 1000)
+    const expires = new Date(new Date().getTime() + 5 * 60 * 1000)
 
     const existingToken = await getTwoFactorTokenByEmail(email)
 

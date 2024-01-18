@@ -24,6 +24,7 @@ export const getUserById = async (id:string) => {
 export const validatePassword = async (storedPasswordHash: string, enteredPassword: string) => {
     try {
         const isPasswordValid = await bcrypt.compare(enteredPassword, storedPasswordHash);
+        
         return isPasswordValid;
     } catch (error) {
         return null;

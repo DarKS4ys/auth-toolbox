@@ -62,7 +62,7 @@ const LoginForm = () => {
             setSuccess(data.success);
           }
 
-          if (data?.twoFactor) {
+          if (data?.isTwoFactorEnabled) {
             setShowTwoFactor(true);
           }
         })

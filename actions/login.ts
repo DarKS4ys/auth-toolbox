@@ -3,7 +3,7 @@
 import { getTwoFactorConfirmationByUserId } from '@/data/two-factor-confirmation';
 import { getTwoFactorTokenByEmail } from '@/data/two-factor-token';
 import { getUserByEmail, validatePassword } from '@/data/user';
-import { signIn } from '@/lib/auth';
+import { signIn } from '@/auth';
 import { db } from '@/lib/db';
 import { sendTwoFactorTokenEmail, sendVerificationEmail } from '@/lib/mail';
 import { generateTwoFactorToken, generateVerificationToken } from '@/lib/tokens';
@@ -87,7 +87,7 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
       )
   
       // ? lets the app know that the user has 2FA to change the UI accordingly on login
-      return { twoFactor: true }
+      return { isTwoFactorEnabled: true }
     }
   }
 
