@@ -51,7 +51,7 @@ const SettingsPage = () => {
       isTwoFactorEnabled: user?.isTwoFactorEnabled || undefined
     },
   });
-  console.log(user?.isTwoFactorEnabled)
+
   const onSubmit = async (values: z.infer<typeof SettingsSchema>) => {
     startTransition(async () => {
       try {
